@@ -1,0 +1,206 @@
+
+mysql> create database petstore;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use petstore;
+Database changed
+
+CREATE TABLE categories ( category_id INT PRIMARY KEY, category_name VARCHAR(50) NOT NULL);
+
+desc customers;
+
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| category_id   | int         | NO   | PRI | NULL    |       |
+| category_name | varchar(50) | NO   |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+
+
+CREATE TABLE breeds (breed_id INT PRIMARY KEY, breed_name VARCHAR(50) NOT NULL,category_id INT,FOREIGN KEY (category_id) REFERENCES categories(category_id));
+
+desc breeds;
+
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| breed_id    | int         | NO   | PRI | NULL    |       |
+| breed_name  | varchar(50) | NO   |     | NULL    |       |
+| category_id | int         | YES  | MUL | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+
+
+CREATE TABLE pets (pet_id INT PRIMARY KEY , pet_name VARCHAR(50) NOT NULL, breed_id INT,
+    age INT, price DECIMAL(8, 2), FOREIGN KEY (breed_id) REFERENCES breeds(breed_id));
+
+desc pets;
+
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| pet_id   | int          | NO   | PRI | NULL    |       |
+| pet_name | varchar(50)  | NO   |     | NULL    |       |
+| breed_id | int          | YES  | MUL | NULL    |       |
+| age      | int          | YES  |     | NULL    |       |
+| price    | decimal(8,2) | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+
+
+CREATE TABLE customers ( customer_id INT PRIMARY KEY,  customer_name VARCHAR(100) NOT NULL, address VARCHAR(255) NOT NULL, email VARCHAR(50) UNIQUE NOT NULL);
+desc customers;
+
+
++---------------+--------------+------+-----+---------+-------+
+| Field         | Type         | Null | Key | Default | Extra |
++---------------+--------------+------+-----+---------+-------+
+| customer_id   | int          | NO   | PRI | NULL    |       |
+| customer_name | varchar(100) | NO   |     | NULL    |       |
+| address       | varchar(255) | NO   |     | NULL    |       |
+| email         | varchar(50)  | NO   | UNI | NULL    |       |
++---------------+--------------+------+-----+---------+-------+
+
+
+
+
+CREATE TABLE orders (order_id INT PRIMARY KEY,  customer_id INT, order_date DATE NOT NULL, total_amount DECIMAL(10, 2) NOT NULL, FOREIGN KEY (customer_id) REFERENCES customers(customer_id));
+
+desc orders;
++--------------+---------------+------+-----+---------+-------+
+| Field        | Type          | Null | Key | Default | Extra |
++--------------+---------------+------+-----+---------+-------+
+| order_id     | int           | NO   | PRI | NULL    |       |
+| customer_id  | int           | YES  | MUL | NULL    |       |
+| order_date   | date          | NO   |     | NULL    |       |
+| total_amount | decimal(10,2) | NO   |     | NULL    |       |
++--------------+---------------+------+-----+---------+-------+
+
+
+CREATE TABLE order_items ( item_id INT PRIMARY KEY, order_id INT, pet_id INT, quantity INT NOT NULL, subtotal DECIMAL(10, 2) NOT NULL, FOREIGN KEY (order_id) REFERENCES orders(order_id), FOREIGN KEY (pet_id) REFERENCES pets(pet_id));
+
+desc  order_items;
+
+
++----------+---------------+------+-----+---------+-------+
+| Field    | Type          | Null | Key | Default | Extra |
++----------+---------------+------+-----+---------+-------+
+| item_id  | int           | NO   | PRI | NULL    |       |
+| order_id | int           | YES  | MUL | NULL    |       |
+| pet_id   | int           | YES  | MUL | NULL    |       |
+| quantity | int           | NO   |     | NULL    |       |
+| subtotal | decimal(10,2) | NO   |     | NULL    |       |
++----------+---------------+------+-----+---------+-------+
+
+
+INSERT INTO categories VALUES (1, 'Dogs');
+INSERT INTO categories VALUES (2, 'Cats');
+INSERT INTO categories VALUES (3, 'Fish');
+INSERT INTO categories VALUES (4, 'PARROTS');
+INSERT INTO categories VALUES (5, 'rabbits');
+
+select * from categories;
++-------------+---------------+
+| category_id | category_name |
++-------------+---------------+
+|           1 | Dogs          |
+|           2 | Cats          |
+|           3 | Fish          |
+|           4 | PARROTS       |
+|           5 | rabbits       |
++-------------+---------------+
+
+
+INSERT INTO breeds VALUES (1, 'Labrador', 1);
+INSERT INTO breeds VALUES (2, 'Siamese', 2);
+INSERT INTO breeds VALUES (3, 'Goldfish', 3);
+INSERT INTO breeds VALUES (4, 'Macaws', 4);
+INSERT INTO breeds VALUES (5, 'Holland', 5);
+
+select * from breeds;
+
+
++----------+------------+-------------+
+| breed_id | breed_name | category_id |
++----------+------------+-------------+
+|        1 | Labrador   |           1 |
+|        2 | Siamese    |           2 |
+|        3 | Goldfish   |           3 |
+|        4 | Macaws     |           4 |
+|        5 | Holland    |           5 |
++----------+------------+-------------+
+
+    
+
+INSERT INTO pets VALUES (1, 'Buddy', 1, 2, 5000.00);
+INSERT INTO pets VALUES (2, 'Whiskers', 2, 1,2500.00);
+INSERT INTO pets VALUES (3, 'Nemo', 3, 1, 50.00);
+INSERT INTO pets VALUES (4, 'Ringo', 4, 2, 2000.00);
+INSERT INTO pets VALUES (5, 'Judy', 5, 1, 800.00);
+
+select * from pets;
+
++--------+----------+----------+------+---------+
+| pet_id | pet_name | breed_id | age  | price   |
++--------+----------+----------+------+---------+
+|      1 | Buddy    |        1 |    2 | 5000.00 |
+|      2 | Whiskers |        2 |    1 | 2500.00 |
+|      3 | Nemo     |        3 |    1 |   50.00 |
+|      4 | Ringo    |        4 |    2 | 2000.00 |
+|      5 | Judy     |        5 |    1 |  800.00 |
++--------+----------+----------+------+---------+
+
+
+INSERT INTO customers VALUES (1, 'John Doe', '123 Main St', 'john@gmail.com');
+INSERT INTO customers VALUES (2, 'Jane charle', '456 Oak St', 'jane@gmail.com');
+INSERT INTO customers VALUES (3, 'smith steve', '498 nake St', 'smith@gmail.com');
+INSERT INTO customers VALUES (4, 'Jonny holly', '355 hills St', 'jonny@gmail.com');
+
+select * from customers;
+
+
++-------------+---------------+--------------+-----------------+
+| customer_id | customer_name | address      | email           |
++-------------+---------------+--------------+-----------------+
+|           1 | John Doe      | 123 Main St  | john@gmail.com  |
+|           2 | Jane charle   | 456 Oak St   | jane@gmail.com  |
+|           3 | smith steve   | 498 nake St  | smith@gmail.com |
+|           4 | Jonny holly   | 355 hills St | jonny@gmail.com |
++-------------+---------------+--------------+-----------------+
+
+
+INSERT INTO orders VALUES (1, 1, '2023-10-10', 2000.00);
+INSERT INTO orders VALUES (2, 2, '2023-11-15', 500.00);
+INSERT INTO orders VALUES (3, 1, '2023-12-10', 1000.00);
+INSERT INTO orders VALUES (4, 4, '2024-01-01', 800.00);
+
+select * from orders;
++----------+-------------+------------+--------------+
+| order_id | customer_id | order_date | total_amount |
++----------+-------------+------------+--------------+
+|        1 |           1 | 2023-10-10 |      2000.00 |
+|        2 |           2 | 2023-11-15 |       500.00 |
+|        3 |           1 | 2023-12-10 |      1000.00 |
+|        4 |           4 | 2024-01-01 |       800.00 |
++----------+-------------+------------+--------------+
+
+
+
+INSERT INTO order_items VALUES (1, 1, 1, 1, 5000.00);
+INSERT INTO order_items VALUES (2, 1, 2, 1, 1000.00);
+INSERT INTO order_items VALUES (3, 2, 3, 2, 100.00);
+INSERT INTO order_items VALUES (4, 3, 4, 1, 500.00);
+INSERT INTO order_items VALUES (5, 4, 5, 1, 300.00);
+
+
+
+select * from order_items;
+
++---------+----------+--------+----------+----------+
+| item_id | order_id | pet_id | quantity | subtotal |
++---------+----------+--------+----------+----------+
+|       1 |        1 |      1 |        1 |  5000.00 |
+|       2 |        1 |      2 |        1 |  1000.00 |
+|       3 |        2 |      3 |        2 |   100.00 |
+|       4 |        3 |      4 |        1 |   500.00 |
+|       5 |        4 |      5 |        1 |   300.00 |
++---------+----------+--------+----------+----------+
+
