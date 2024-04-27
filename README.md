@@ -1,1 +1,2 @@
 # sql-pet-store
+Develop a pet store database that provides web-based interface to a pet shop owner to manages his petshop activities.This database provides an option for storing and managing basic information about pets and pet products available in the shop.This also contains the storing and managing the basic information about the customer and track the information about sold pets and products to a customer.In this database one can add animals and birds,can also delete them,also update .
